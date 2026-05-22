@@ -1,4 +1,4 @@
-# Casino Monticello Virtual — Documentación
+# Casino Monticello Virtual - Documentación
 
 ## 1. Equipo y curso
 
@@ -14,8 +14,7 @@
 
 ## 2. Alcance de la implementación
 
-Este repositorio consiste en el **proyecto del equipo**: desarrollo, implementación y documentación de la arquitectura SOA del Casino Monticello Virtual.
-
+Este repositorio consiste en el proyecto del equipo: desarrollo, implementación y documentación de la arquitectura SOA del Casino Monticello Virtual.
 
 | Servicio          | Endpoint     | Rol                                        |
 | ----------------- | ------------ | ------------------------------------------ |
@@ -25,9 +24,7 @@ Este repositorio consiste en el **proyecto del equipo**: desarrollo, implementac
 | Apuestas          | `/apuesta`   | Motor de apuestas y resultados (RF-05)     |
 | Historial         | `/historial` | Movimientos y apuestas del usuario (RF-03) |
 
-
 **Servicios y clientes implementados**
-
 
 | Informe             | Nombre en bus | Servicio                       | Cliente                     | RF    |
 | ------------------- | ------------- | ------------------------------ | --------------------------- | ----- |
@@ -37,10 +34,9 @@ Este repositorio consiste en el **proyecto del equipo**: desarrollo, implementac
 | `/apuesta` (ruleta) | `rulet`       | `services/roulette_service.py` | `client/roulette_client.py` | RF-05 |
 | `/historial`        | `histo`       | `services/history_service.py`  | `client/history_client.py`  | RF-03 |
 
-
 Además: **ESB** (`soa/soa_bus.py`), **protocolo** (`soa/soa_lib.py`) y **persistencia** Supabase (`db/`).
 
-Se pidió **al menos un servicio funcional**, este repositorio entrega **los cinco** del diagrama SOA indicados en el informe. La **ruleta** (`rulet`) es el caso más completo (motor de juego + apuestas + premios). Saldo, depósitos y retiros se delegan al servicio `walle`, y el cliente de ruleta consulta saldo vía `walle`, no duplicando lógica de billetera.
+Se pidió al menos un servicio funcional, este repositorio entrega los cinco del diagrama SOA indicados en el informe. La ruleta (`rulet`) es el caso más completo (motor de juego + apuestas + premios). Saldo, depósitos y retiros se delegan al servicio `walle`, y el cliente de ruleta consulta saldo vía `walle`, no duplicando lógica de billetera.
 
 ---
 
@@ -71,10 +67,7 @@ flowchart TB
     SA & SW & SJ & SR & SH --> PG
 ```
 
-
-
 ### 3.1 Rol de cada capa
-
 
 | Capa                     | Ubicación                     | Responsabilidad                                                                                                  |
 | ------------------------ | ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -86,24 +79,20 @@ flowchart TB
 | **Capa DA**              | `db/*_repository.py`          | Acceso a PostgreSQL, donde ningún cliente la utiliza directamente                                                |
 | **Persistencia**         | Supabase (PostgreSQL 16)      | Tablas del modelo del informe: `usuarios`, `billeteras`, `juegos`, `sesiones_juego`, `apuestas`, `transacciones` |
 
-
 ### 3.2 Archivos obligatorios y el bus SOA
 
 **Se usan** los archivos que entregó el profesor para implementar el bus SOA. Resumen:
-
 
 | Archivo                            | ¿Cómo lo usa Monticello?                                                                                    |
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | `soa/soa_lib.py` (obligatorio)     | **En uso directo**: todos los clientes y servicios envían y reciben mensajes con sus funciones              |
 | `soa/soa_service.py` (obligatorio) | **Referencia**: el registro `sinit` y el bucle de respuesta se replican en `services/soa_service_runner.py` |
 | `soa/soa_client.py` (obligatorio)  | **Referencia**: la forma de invocar el bus se replican en `client/soa_invoke.py`                            |
-| `soa/soa_bus.py`                   | ESB agregado por el equipo, pero construido **solo** con `send_message` / `receive_message` de `soa_lib.py` |
+| `soa/soa_bus.py`                   | ESB agregado por el equipo, pero construido solo con `send_message` / `receive_message` de `soa_lib.py`     |
 
-
-Los ejemplos `soa_client.py` y `soa_service.py` siguen en el repo como laboratorio (`servi`). La ruleta y el resto de servicios usan el **mismo protocolo**, sin editar esos tres archivos obligatorios.
+Los ejemplos `soa_client.py` y `soa_service.py` siguen en el repo como laboratorio (`servi`). La ruleta y el resto de servicios usan el mismo protocolo, sin editar esos tres archivos obligatorios.
 
 ### 3.3 Conceptos aplicados
-
 
 | Concepto                  | Implementación                                                                     |
 | ------------------------- | ---------------------------------------------------------------------------------- |
@@ -113,15 +102,13 @@ Los ejemplos `soa_client.py` y `soa_service.py` siguen en el repo como laborator
 | Registro de servicios     | Mensaje inicial `sinit` + nombre del servicio                                      |
 | Punto único de falla      | Si el bus no está en ejecución, no hay comunicación (trade-off documentado de SOA) |
 
-
 ---
 
 ## 4. Persistencia: PostgreSQL en Supabase
 
-La persistencia definida en el informe (PostgreSQL, repositorio compartido entre servicios, acceso solo vía capa DA) se implementa con **Supabase** como hosting de PostgreSQL.
+La persistencia definida en el informe (PostgreSQL, repositorio compartido entre servicios, acceso solo vía capa DA) se implementa con Supabase como hosting de PostgreSQL.
 
 ### 4.1 Conexión
-
 
 | Parámetro     | Valor                                       |
 | ------------- | ------------------------------------------- |
@@ -130,7 +117,6 @@ La persistencia definida en el informe (PostgreSQL, repositorio compartido entre
 | Base de datos | `postgres`                                  |
 | Usuario       | `postgres`                                  |
 | Contraseña    | Variable de entorno `DB_PASSWORD` en `.env` |
-
 
 La URL se construye en `db/connection.py` con `sslmode=require`, usando un pool de conexiones (`ThreadedConnectionPool`).
 
@@ -150,10 +136,9 @@ python db/test_connection.py
 python db/init_database.py
 ```
 
-`db/schema.sql` crea las tablas del modelo. `db/seed.sql` inserta un usuario demo (`id_usuario = 1`) con saldo inicial de **$50.000 CLP** y el juego **Ruleta Europea**.
+`db/schema.sql` crea las tablas del modelo. `db/seed.sql` inserta un usuario demo (`id_usuario = 1`) con saldo inicial de $50.000 CLP y el juego Ruleta Europea.
 
 ### 4.3 Scripts de base de datos
-
 
 | Script                  | Función                                         |
 | ----------------------- | ----------------------------------------------- |
@@ -161,7 +146,6 @@ python db/init_database.py
 | `db/init_database.py`   | Ejecuta `schema.sql` y `seed.sql`               |
 | `db/connection.py`      | Pool y resolución de URL                        |
 | `db/*_repository.py`    | Capa DA por dominio (auth, wallet, games, etc.) |
-
 
 ---
 
@@ -181,10 +165,9 @@ El bus escucha en `localhost:5000`.
 
 ### 5.2 Convención de nombres en el bus
 
-Se recibió el protocolo en `soa/soa_lib.py`: cada mensaje concatena **nombre de servicio + payload**, y al leerlo se separa en **5 caracteres de destino** + resto (`data[:5]` / `data[5:]`). Por eso el ejemplo usa `servi` y el cliente hace `data[5:].decode()` en `soa/soa_client.py`.
+Se recibió el protocolo en `soa/soa_lib.py`: cada mensaje concatena nombre de servicio + payload, y al leerlo se separa en 5 caracteres de destino + resto (`data[:5]` / `data[5:]`). Por eso el ejemplo usa `servi` y el cliente hace `data[5:].decode()` en `soa/soa_client.py`.
 
-En Monticello cada servicio expone un `SERVICE_NAME` de **exactamente 5 caracteres** en el bus (`rulet`, `walle`, `auths`…).
-
+En Monticello cada servicio expone un `SERVICE_NAME` de exactamente 5 caracteres en el bus (`rulet`, `walle`, `auths`…).
 
 | Archivo              | Rol respecto a los 5 caracteres                                 |
 | -------------------- | --------------------------------------------------------------- |
@@ -192,8 +175,7 @@ En Monticello cada servicio expone un `SERVICE_NAME` de **exactamente 5 caracter
 | `soa/soa_service.py` | Servicio ejemplo registrado como `servi`                        |
 | `soa/soa_client.py`  | Invoca `servi`; omite los 5 primeros chars al leer la respuesta |
 
-
-El **ESB** `soa/soa_bus.py` lo implementó el equipo después, aplicando la misma regla (`data[:5]` destino, `data[5:]` cuerpo) para enrutar clientes y servicios.
+El ESB `soa/soa_bus.py` lo implementó el equipo después, aplicando la misma regla (`data[:5]` destino, `data[5:]` cuerpo) para enrutar clientes y servicios.
 
 ### 5.3 Registro del servicio
 
@@ -218,14 +200,12 @@ Todas las respuestas de servicios usan JSON: `{"ok": bool, "message": str, ...}`
 
 Tras `python db/init_database.py`:
 
-
 | Dato          | Valor                |
 | ------------- | -------------------- |
 | Correo        | `demo@monticello.cl` |
 | Contraseña    | `demo123`            |
 | `id_usuario`  | `1`                  |
 | Saldo inicial | $50.000 CLP          |
-
 
 ---
 
@@ -235,12 +215,10 @@ Tras `python db/init_database.py`:
 
 **Servicio:** `services/auth_service.py` · **Cliente:** `client/auth_client.py`
 
-
 | Acción   | Payload de ejemplo |
 | -------- | ------------------ |
 | Login    | `LOGIN             |
 | Registro | `REGIST            |
-
 
 Comandos cliente: `login <correo> <password>`, `registro <rut> <nombre> <apellido> <correo> <password>`, `usuario`, `salir`.
 
@@ -248,13 +226,11 @@ Comandos cliente: `login <correo> <password>`, `registro <rut> <nombre> <apellid
 
 **Servicio:** `services/wallet_service.py` · **Cliente:** `client/wallet_client.py`
 
-
 | Acción   | Payload de ejemplo |
 | -------- | ------------------ |
 | Saldo    | `SALDO             |
 | Depósito | `DEPOS             |
 | Retiro   | `RETIR             |
-
 
 Comandos cliente: `saldo [user_id]`, `depositar <monto>`, `retirar <monto>`, `salir`.
 
@@ -262,12 +238,10 @@ Comandos cliente: `saldo [user_id]`, `depositar <monto>`, `retirar <monto>`, `sa
 
 **Servicio:** `services/games_service.py` · **Cliente:** `client/games_client.py`
 
-
 | Acción         | Payload de ejemplo |
 | -------------- | ------------------ |
 | Catálogo       | `LIST`             |
 | Iniciar sesión | `START             |
-
 
 Comandos cliente: `listar`, `iniciar <id_juego> [user_id]`, `salir`.
 
@@ -288,7 +262,6 @@ SPIN|1|500|numero|7
 
 **Tipos de apuesta (`tipo`):**
 
-
 | Tipo     | Valor (`valor`) | Pago |
 | -------- | --------------- | ---- |
 | `rojo`   | vacío           | 1:1  |
@@ -296,7 +269,6 @@ SPIN|1|500|numero|7
 | `par`    | vacío           | 1:1  |
 | `impar`  | vacío           | 1:1  |
 | `numero` | entero 0–36     | 35:1 |
-
 
 El sorteo es aleatorio entre 0 y 36 (ruleta europea). El 0 es verde; en apuestas rojo/negro/par/impar no gana.
 
@@ -332,18 +304,15 @@ Esto materializa la trazabilidad financiera (apuesta y transacción).
 
 **Servicio:** `services/history_service.py` · **Cliente:** `client/history_client.py`
 
-
 | Acción             | Payload de ejemplo |
 | ------------------ | ------------------ |
 | Listar movimientos | `LIST              |
-
 
 Comandos cliente: `listar [user_id] [limite]`, `salir`.
 
 Incluye transacciones de depósito, retiro, apuesta y premio vinculadas a apuestas cuando aplica.
 
 ### 6.7 Requerimientos no funcionales (global)
-
 
 | Atributo          | Tratamiento                                             |
 | ----------------- | ------------------------------------------------------- |
@@ -352,13 +321,11 @@ Incluye transacciones de depósito, retiro, apuesta y premio vinculadas a apuest
 | Disponibilidad    | Requiere bus activo y Supabase en línea                 |
 | Bajo acoplamiento | Cinco procesos servicio independientes en el mismo bus  |
 
-
 ---
 
 ## 7. Clientes e interfaces
 
-Cada servicio del informe tiene un **proceso cliente** de consola invocable de forma independiente:
-
+Cada servicio del informe tiene un proceso cliente de consola invocable de forma independiente:
 
 | Interfaz                   | Cliente                     | Servicio en bus                |
 | -------------------------- | --------------------------- | ------------------------------ |
@@ -367,7 +334,6 @@ Cada servicio del informe tiene un **proceso cliente** de consola invocable de f
 | Catálogo y sesión de juego | `client/games_client.py`    | `juego`                        |
 | Apuesta en ruleta          | `client/roulette_client.py` | `rulet` (+ `walle` para saldo) |
 | Historial financiero       | `client/history_client.py`  | `histo`                        |
-
 
 Comandos del cliente ruleta: `saldo` (vía `walle`), `apostar rojo 1000`, `apostar numero 7 500`, `ayuda`, `salir`.
 
@@ -467,4 +433,4 @@ python client/roulette_client.py
 
 ---
 
-*Documentación - Casino Monticello Virtual*
+_Documentación - Casino Monticello Virtual_
