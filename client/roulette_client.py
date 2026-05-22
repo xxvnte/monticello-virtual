@@ -20,13 +20,15 @@ def print_help():
 
 
 def parse_bet_command(tokens):
-    if len(tokens) < 3:
+    if not tokens:
         raise ValueError("Uso: apostar <tipo> <monto> o apostar numero <n> <monto>")
     bet_type = tokens[0].lower()
     if bet_type == "numero":
         if len(tokens) < 3:
             raise ValueError("Uso: apostar numero <0-36> <monto>")
         return bet_type, tokens[1], float(tokens[2])
+    if len(tokens) < 2:
+        raise ValueError("Uso: apostar <tipo> <monto> o apostar numero <n> <monto>")
     return bet_type, "", float(tokens[1])
 
 

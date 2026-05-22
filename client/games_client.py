@@ -44,8 +44,17 @@ def main():
                 print("Uso: iniciar <id_juego> [user_id]")
                 continue
             game_id = tokens[1]
+            try:
+                game_id_int = int(game_id)
+            except ValueError:
+                print("Uso: iniciar <id_juego> [user_id]  (id numerico del catalogo, ej. iniciar 1)")
+                continue
             user_id = tokens[2] if len(tokens) > 2 else DEFAULT_USER_ID
-            display_response(invoke_service(SERVICE_NAME, f"START|{user_id}|{game_id}"))
+            parsed = display_response(
+                invoke_service(SERVICE_NAME, f"START|{user_id}|{game_id_int}")
+            )
+            if parsed and parsed.get("session_id") is not None:
+                print(f"ID sesion: {parsed['session_id']}")
             continue
         print("Comando no reconocido.")
 

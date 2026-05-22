@@ -61,7 +61,7 @@ flowchart TB
         SR[rulet]
         SH[histo]
     end
-    PG[(Supabase PostgreSQL)]
+    PG[(PostgreSQL)]
     CA & CW & CJ & CR & CH --> B
     B --> SA & SW & SJ & SR & SH
     SA & SW & SJ & SR & SH --> PG
@@ -346,6 +346,8 @@ monticello-soa/
 ├── .env.example
 ├── requirements.txt
 ├── README.md
+├── docs/
+│   └── how_play.md
 ├── soa/
 │   ├── soa_bus.py
 │   ├── soa_lib.py
@@ -397,6 +399,8 @@ Configurar `.env` como en la sección 4.2 y ejecutar los scripts de base de dato
 ---
 
 ## 10. Ejecución del sistema
+
+Resumen de ejecución, para el paso a paso completo con ejemplos por servicio, ver [docs/how_play.md](docs/how_play.md).
 
 Desde la raíz del proyecto (`monticello-soa/`).
 

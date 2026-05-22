@@ -21,7 +21,7 @@ class WalletRepository:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    SELECT b.id_billetera, b.saldo, u.activo
+                    SELECT b.id_billetera, b.saldo, b.moneda, u.activo
                     FROM billeteras b
                     JOIN usuarios u ON u.id_usuario = b.id_usuario
                     WHERE b.id_usuario = %s
