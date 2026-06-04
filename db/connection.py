@@ -11,10 +11,10 @@ from psycopg2.pool import ThreadedConnectionPool
 ROOT_DIR = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT_DIR / ".env")
 
-POSTGRES_HOST = "db.yxobdkldjhinxmwfsure.supabase.co"
-POSTGRES_PORT = 5432
-POSTGRES_DB = "postgres"
-POSTGRES_USER = "postgres"
+POSTGRES_HOST = os.getenv("DB_HOST", "db.yxobdkldjhinxmwfsure.supabase.co")
+POSTGRES_PORT = int(os.getenv("DB_PORT", "5432"))
+POSTGRES_DB = os.getenv("DB_NAME", "postgres")
+POSTGRES_USER = os.getenv("DB_USER", "postgres")
 
 _pool = None
 
