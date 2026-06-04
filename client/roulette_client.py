@@ -13,23 +13,41 @@ DEFAULT_USER_ID = 1
 def print_help():
     print("\nComandos:")
     print("  saldo [user_id]")
-    print("  apostar <tipo> <monto>  (rojo, negro, par, impar)")
-    print("  apostar numero <n> <monto>")
+    print("  apostar <tipo> <monto> [user_id]  (rojo, negro, par, impar)")
+    print("  apostar numero <n> <monto> [user_id]")
     print("  ayuda")
     print("  salir")
+    print(f"  (sin user_id se usa {DEFAULT_USER_ID}, usuario demo tras init_database)")
+
+
+def resolve_user_id(tokens, amount_index):
+    if len(tokens) > amount_index + 1:
+        return int(tokens[amount_index + 1])
+    return DEFAULT_USER_ID
 
 
 def parse_bet_command(tokens):
     if not tokens:
-        raise ValueError("Uso: apostar <tipo> <monto> o apostar numero <n> <monto>")
+        raise ValueError(
+            "Uso: apostar <tipo> <monto> [user_id] o apostar numero <n> <monto> [user_id]"
+        )
     bet_type = tokens[0].lower()
     if bet_type == "numero":
         if len(tokens) < 3:
-            raise ValueError("Uso: apostar numero <0-36> <monto>")
-        return bet_type, tokens[1], float(tokens[2])
-    if len(tokens) < 2:
-        raise ValueError("Uso: apostar <tipo> <monto> o apostar numero <n> <monto>")
-    return bet_type, "", float(tokens[1])
+            raise ValueError("Uso: apostar numero <0-36> <monto> [user_id]")
+        amount_index = 2
+        bet_value = tokens[1]
+        amount = float(tokens[2])
+    else:
+        if len(tokens) < 2:
+            raise ValueError(
+                "Uso: apostar <tipo> <monto> [user_id] o apostar numero <n> <monto> [user_id]"
+            )
+        amount_index = 1
+        bet_value = ""
+        amount = float(tokens[1])
+    user_id = resolve_user_id(tokens, amount_index)
+    return bet_type, bet_value, amount, user_id
 
 
 def show_spin_result(parsed):
@@ -65,8 +83,8 @@ def main():
                     print(f"Saldo: {parsed['balance']} {parsed.get('currency', 'CLP')}")
                 continue
             if command == "apostar":
-                bet_type, bet_value, amount = parse_bet_command(tokens[1:])
-                payload = f"SPIN|{DEFAULT_USER_ID}|{amount}|{bet_type}|{bet_value}"
+                bet_type, bet_value, amount, user_id = parse_bet_command(tokens[1:])
+                payload = f"SPIN|{user_id}|{amount}|{bet_type}|{bet_value}"
                 parsed = display_response(invoke_service(RULET_SERVICE, payload))
                 if parsed:
                     show_spin_result(parsed)

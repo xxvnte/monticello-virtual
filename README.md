@@ -255,9 +255,11 @@ El saldo se consulta con el servicio `walle` (no en `rulet`), alineado con la se
 
 **Apuesta (`SPIN`)** - campos: `acción`, `id_usuario`, `monto`, `tipo`, `valor`
 
+El `id_usuario` es obligatorio en el payload (cualquier usuario con billetera activa y saldo suficiente). El cliente de consola usa `1` por defecto si no se indica otro id.
+
 ```
 SPIN|1|1000|rojo|
-SPIN|1|500|numero|7
+SPIN|2|500|numero|7
 ```
 
 **Tipos de apuesta (`tipo`):**
@@ -335,7 +337,7 @@ Cada servicio del informe tiene un proceso cliente de consola invocable de forma
 | Apuesta en ruleta          | `client/roulette_client.py` | `rulet` (+ `walle` para saldo) |
 | Historial financiero       | `client/history_client.py`  | `histo`                        |
 
-Comandos del cliente ruleta: `saldo` (vía `walle`), `apostar rojo 1000`, `apostar numero 7 500`, `ayuda`, `salir`.
+Comandos del cliente ruleta: `saldo [user_id]` (vía `walle`), `apostar rojo 1000 [user_id]`, `apostar numero 7 500 [user_id]`, `ayuda`, `salir`. Sin `user_id` se asume `1` (demo).
 
 ---
 

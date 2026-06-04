@@ -180,18 +180,22 @@ python client/roulette_client.py
 
 ### Comandos
 
-| Comando                 | Ejemplo                |
-| ----------------------- | ---------------------- |
-| Saldo (vía billetera)   | `saldo`                |
-| Apostar color / paridad | `apostar rojo 1000`    |
-|                         | `apostar negro 500`    |
-|                         | `apostar par 2000`     |
-|                         | `apostar impar 1500`   |
-| Apostar número 0–36     | `apostar numero 7 500` |
-| Ayuda                   | `ayuda`                |
-| Salir                   | `salir`                |
+| Comando                 | Ejemplo                              |
+| ----------------------- | ------------------------------------ |
+| Saldo (vía billetera)   | `saldo` o `saldo 2`                  |
+| Apostar color / paridad | `apostar rojo 1000` o `... 1000 2`   |
+|                         | `apostar negro 500`                  |
+|                         | `apostar par 2000`                   |
+|                         | `apostar impar 1500`                 |
+| Apostar número 0–36     | `apostar numero 7 500` o `... 500 2` |
+| Ayuda                   | `ayuda`                              |
+| Salir                   | `salir`                              |
+
+Opcional al final: `[user_id]` (ej. `2` tras registrarte con `auth_client`). Si se omite, se usa el usuario demo `1`.
 
 Apuestas simples (rojo, negro, par, impar): pago 1:1. Número exacto: pago 35:1. El `0` es verde y no gana en rojo/negro/par/impar.
+
+Payload SOA directo al servicio `rulet`: `SPIN|user_id|monto|tipo|valor` (ej. `SPIN|2|1000|rojo|`).
 
 ### Ejemplo de sesión
 
@@ -212,6 +216,14 @@ Ruleta> apostar numero 7 500
 Numero 14 (negro). perdiste.
 Saldo actual: 55500.0
 Numero: 14 | Color: negro | Premio: 0
+
+Ruleta> saldo 2
+Saldo: 50000.0 CLP
+
+Ruleta> apostar rojo 1000 2
+
+Numero 32 (rojo). ganaste.
+Saldo actual: 51000.0
 ```
 
 ---
