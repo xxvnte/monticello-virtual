@@ -1,4 +1,5 @@
 from db.connection import get_connection
+from db.password_hasher import hash_password, verify_password
 
 
 class AuthRepository:
@@ -7,15 +8,26 @@ class AuthRepository:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    SELECT id_usuario, nombre, apellido, correo, rol, activo
+                    SELECT id_usuario, nombre, apellido, correo, rol, activo, password_hash
                     FROM usuarios
-                    WHERE correo = %s AND password_hash = %s
+                    WHERE correo = %s
                     """,
-                    (email, password),
+                    (email,),
                 )
-                return cur.fetchone()
+                user = cur.fetchone()
+                if not user or not verify_password(password, user["password_hash"]):
+                    return None
+                return {
+                    "id_usuario": user["id_usuario"],
+                    "nombre": user["nombre"],
+                    "apellido": user["apellido"],
+                    "correo": user["correo"],
+                    "rol": user["rol"],
+                    "activo": user["activo"],
+                }
 
     def register(self, rut, nombre, apellido, email, password):
+        password_digest = hash_password(password)
         with get_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -24,7 +36,7 @@ class AuthRepository:
                     VALUES (%s, %s, %s, %s, %s)
                     RETURNING id_usuario, nombre, apellido, correo, rol
                     """,
-                    (rut, nombre, apellido, email, password),
+                    (rut, nombre, apellido, email, password_digest),
                 )
                 user = cur.fetchone()
                 cur.execute(

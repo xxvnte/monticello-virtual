@@ -1,5 +1,12 @@
 INSERT INTO usuarios (rut, nombre, apellido, correo, password_hash, rol)
-VALUES ('11111111-1', 'Demo', 'Jugador', 'demo@monticello.cl', 'demo123', 'jugador')
+VALUES (
+    '11111111-1',
+    'Demo',
+    'Jugador',
+    'demo@monticello.cl',
+    '$2b$12$A6cD.6D81timbPBVvk6G8.7DDD2C2a6A74c95Fo.cT04Rw1hOVTWG',
+    'jugador'
+)
 ON CONFLICT (correo) DO UPDATE SET password_hash = EXCLUDED.password_hash;
 
 INSERT INTO billeteras (id_usuario, saldo)
